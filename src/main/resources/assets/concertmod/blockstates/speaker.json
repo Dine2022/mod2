@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "concertmod:speaker"
+    },
+    "facing=east": {
+      "model": "concertmod:speaker",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "concertmod:speaker",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "concertmod:speaker",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "modid": "concertmod",
+    "name": "Concert Mod",
+    "description": "Stage equipment for concerts: speakers, spotlights, strobes, lamps, LED screens, stage and truss.",
+    "version": "1.0.0",
+    "mcversion": "1.12.2",
+    "authorList": []
+  }
+]

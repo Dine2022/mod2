@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "concertmod:lamp"
+    },
+    "lit=true": {
+      "model": "concertmod:lamp"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "concertmod:blocks/speaker_top",
+    "front": "concertmod:blocks/speaker_front",
+    "side": "concertmod:blocks/speaker_side"
+  }
+}

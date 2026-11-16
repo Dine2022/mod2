@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "concertmod:spotlight"
+    },
+    "hanging=true": {
+      "model": "concertmod:spotlight",
+      "x": 180
+    }
+  }
+}

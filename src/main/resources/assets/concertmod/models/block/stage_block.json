@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "top": "concertmod:blocks/stage_top",
+    "bottom": "concertmod:blocks/stage_side",
+    "side": "concertmod:blocks/stage_side"
+  }
+}

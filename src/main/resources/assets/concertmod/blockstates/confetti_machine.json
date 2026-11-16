@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "concertmod:confetti_machine"
+    },
+    "hanging=true": {
+      "model": "concertmod:confetti_machine",
+      "x": 180
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "concertmod:flame_machine"
+    },
+    "hanging=true": {
+      "model": "concertmod:flame_machine",
+      "x": 180
+    }
+  }
+}

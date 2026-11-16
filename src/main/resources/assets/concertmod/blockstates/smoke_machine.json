@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "concertmod:smoke_machine"
+    },
+    "hanging=true": {
+      "model": "concertmod:smoke_machine",
+      "x": 180
+    }
+  }
+}
