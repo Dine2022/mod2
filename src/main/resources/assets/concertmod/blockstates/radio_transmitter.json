@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "concertmod:radio_transmitter"
+    },
+    "lit=true": {
+      "model": "concertmod:radio_transmitter_on"
+    }
+  }
+}
