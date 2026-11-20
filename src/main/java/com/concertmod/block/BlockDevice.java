@@ -1,6 +1,7 @@
 package com.concertmod.block;
 
 import com.concertmod.ConcertMod;
+import com.concertmod.item.ItemRadioRemote;
 import com.concertmod.tile.TileConcertDevice;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -17,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
-/** Base class for blocks with a controllable device tile entity (redstone + control menu). */
+/** Base class for blocks with a controllable device tile entity (redstone + radio + control menu). */
 public abstract class BlockDevice extends Block {
     /** True when the device is mounted on a ceiling (placed on the underside of a block). */
     public static final PropertyBool HANGING = PropertyBool.create("hanging");
@@ -78,6 +79,21 @@ public abstract class BlockDevice extends Block {
         }
         TileConcertDevice dev = (TileConcertDevice) te;
         ItemStack held = player.getHeldItem(hand);
+
+        // shift + radio remote: bind or unbind radio channel
+        if (held.getItem() instanceof ItemRadioRemote && player.isSneaking()) {
+            if (!world.isRemote) {
+                int ch = ItemRadioRemote.getChannel(held);
+                if (dev.radioChannel == ch) {
+                    dev.setRadioChannel(0);
+                    player.sendStatusMessage(new TextComponentTranslation("msg.concertmod.radio_unbound"), true);
+                } else {
+                    dev.setRadioChannel(ch);
+                    player.sendStatusMessage(new TextComponentTranslation("msg.concertmod.radio_bound", String.valueOf(ch)), true);
+                }
+            }
+            return true;
+        }
 
         // shift + empty hand: quick on/off
         if (held.isEmpty() && player.isSneaking()) {

@@ -29,6 +29,9 @@ public class ClientEvents {
             Item item = Item.getItemFromBlock(block);
             ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
         }
+        ModelLoader.setCustomModelResourceLocation(ModRegistry.RADIO_REMOTE, 0,
+                new ModelResourceLocation(ModRegistry.RADIO_REMOTE.getRegistryName(), "inventory"));
+
         ClientRegistry.bindTileEntitySpecialRenderer(TileSpotlight.class, new TESRSpotlight());
         ClientRegistry.bindTileEntitySpecialRenderer(TileLamp.class, new TESRLamp());
         ClientRegistry.bindTileEntitySpecialRenderer(TileStrobe.class, new TESRLamp());

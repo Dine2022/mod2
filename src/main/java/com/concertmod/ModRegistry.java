@@ -3,10 +3,13 @@ package com.concertmod;
 import com.concertmod.block.BlockEffectMachine;
 import com.concertmod.block.BlockLamp;
 import com.concertmod.block.BlockLedScreen;
+import com.concertmod.block.BlockRadioReceiver;
+import com.concertmod.block.BlockRadioTransmitter;
 import com.concertmod.block.BlockSpeaker;
 import com.concertmod.block.BlockSpotlight;
 import com.concertmod.block.BlockStage;
 import com.concertmod.block.BlockTruss;
+import com.concertmod.item.ItemRadioRemote;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -29,6 +32,10 @@ public class ModRegistry {
     public static Block CONFETTI_MACHINE;
     public static Block SMOKE_MACHINE;
     public static Block FLAME_MACHINE;
+    public static Block RADIO_TRANSMITTER;
+    public static Block RADIO_RECEIVER;
+
+    public static Item RADIO_REMOTE;
 
     public static final List<Block> ALL = new ArrayList<Block>();
 
@@ -57,8 +64,11 @@ public class ModRegistry {
         SMOKE_MACHINE = name(new BlockEffectMachine(BlockEffectMachine.SMOKE), "smoke_machine");
         FLAME_MACHINE = name(new BlockEffectMachine(BlockEffectMachine.FLAME), "flame_machine");
 
+        RADIO_TRANSMITTER = name(new BlockRadioTransmitter(), "radio_transmitter");
+        RADIO_RECEIVER = name(new BlockRadioReceiver(), "radio_receiver");
+
         event.getRegistry().registerAll(SPEAKER, STAGE, TRUSS, LED_SCREEN, SPOTLIGHT, LAMP, STROBE,
-                CONFETTI_MACHINE, SMOKE_MACHINE, FLAME_MACHINE);
+                CONFETTI_MACHINE, SMOKE_MACHINE, FLAME_MACHINE, RADIO_TRANSMITTER, RADIO_RECEIVER);
     }
 
     @SubscribeEvent
@@ -68,5 +78,10 @@ public class ModRegistry {
             item.setRegistryName(b.getRegistryName());
             event.getRegistry().register(item);
         }
+
+        RADIO_REMOTE = new ItemRadioRemote();
+        RADIO_REMOTE.setRegistryName(ConcertMod.MODID, "radio_remote");
+        RADIO_REMOTE.setTranslationKey(ConcertMod.MODID + ".radio_remote");
+        event.getRegistry().register(RADIO_REMOTE);
     }
 }

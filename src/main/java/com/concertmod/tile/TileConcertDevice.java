@@ -1,5 +1,7 @@
 package com.concertmod.tile;
 
+import com.concertmod.radio.IRadioListener;
+import com.concertmod.radio.RadioNetwork;
 import com.concertmod.util.ConcertColors;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,19 +14,76 @@ import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
 
-/** Common state of every controllable stage device (spotlight, lamp, strobe). */
-public abstract class TileConcertDevice extends TileEntity {
+/** Common state of every controllable stage device (spotlight, lamp, strobe, effect machines). */
+public abstract class TileConcertDevice extends TileEntity implements IRadioListener {
     public int color = 0xFFFFFF;
     /** Turned on with a command or by shift+click. */
     public boolean commandOn = false;
     /** Powered by redstone. */
     public boolean powered = false;
+    /** Bound radio channel (0 = unbound, 1..64 = active channel). */
+    public int radioChannel = 0;
+    /** Powered wirelessly by the bound radio channel. */
+    public boolean radioPowered = false;
     public boolean rainbow = false;
     public boolean strobe = false;
     public float speed = 1.0F;
 
     public boolean isActive() {
-        return powered || commandOn;
+        return powered || commandOn || radioPowered;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (world != null && !world.isRemote && radioChannel >= RadioNetwork.MIN_CHANNEL) {
+            RadioNetwork.registerListener(world, pos, radioChannel);
+            radioPowered = RadioNetwork.isChannelActive(world, radioChannel);
+        }
+    }
+
+    @Override
+    public void invalidate() {
+        if (world != null && !world.isRemote && radioChannel >= RadioNetwork.MIN_CHANNEL) {
+            RadioNetwork.unregisterListener(world, pos, radioChannel);
+        }
+        super.invalidate();
+    }
+
+    @Override
+    public void onChunkUnload() {
+        if (world != null && !world.isRemote && radioChannel >= RadioNetwork.MIN_CHANNEL) {
+            RadioNetwork.unregisterListener(world, pos, radioChannel);
+        }
+        super.onChunkUnload();
+    }
+
+    @Override
+    public void onRadioStateChanged(boolean active) {
+        if (world == null || world.isRemote) {
+            return;
+        }
+        if (radioPowered != active) {
+            radioPowered = active;
+            sync();
+        }
+    }
+
+    public void setRadioChannel(int newChannel) {
+        int normalized = (newChannel <= 0) ? 0 : RadioNetwork.clampChannel(newChannel);
+        if (world != null && !world.isRemote && radioChannel >= RadioNetwork.MIN_CHANNEL) {
+            RadioNetwork.unregisterListener(world, pos, radioChannel);
+        }
+        radioChannel = normalized;
+        if (world != null && !world.isRemote) {
+            if (radioChannel >= RadioNetwork.MIN_CHANNEL) {
+                RadioNetwork.registerListener(world, pos, radioChannel);
+                radioPowered = RadioNetwork.isChannelActive(world, radioChannel);
+            } else {
+                radioPowered = false;
+            }
+        }
+        sync();
     }
 
     /** Color to draw at the given time (in ticks, with partial ticks). */
@@ -81,6 +140,9 @@ public abstract class TileConcertDevice extends TileEntity {
         if (t.hasKey("Speed")) {
             speed = MathHelper.clamp(t.getFloat("Speed"), 0.1F, 10.0F);
         }
+        if (t.hasKey("RadioChannel")) {
+            setRadioChannel(t.getInteger("RadioChannel"));
+        }
     }
 
     @Override
@@ -89,6 +151,8 @@ public abstract class TileConcertDevice extends TileEntity {
         tag.setInteger("Color", color);
         tag.setBoolean("CommandOn", commandOn);
         tag.setBoolean("Powered", powered);
+        tag.setInteger("RadioChannel", radioChannel);
+        tag.setBoolean("RadioPowered", radioPowered);
         tag.setBoolean("Rainbow", rainbow);
         tag.setBoolean("Strobe", strobe);
         tag.setFloat("Speed", speed);
@@ -103,6 +167,11 @@ public abstract class TileConcertDevice extends TileEntity {
         }
         commandOn = tag.getBoolean("CommandOn");
         powered = tag.getBoolean("Powered");
+        if (tag.hasKey("RadioChannel")) {
+            int ch = tag.getInteger("RadioChannel");
+            radioChannel = (ch <= 0) ? 0 : RadioNetwork.clampChannel(ch);
+        }
+        radioPowered = tag.getBoolean("RadioPowered");
         rainbow = tag.getBoolean("Rainbow");
         if (tag.hasKey("Strobe")) {
             strobe = tag.getBoolean("Strobe");

@@ -2,11 +2,12 @@ package com.concertmod;
 
 import com.concertmod.command.CommandConcert;
 import com.concertmod.network.MessageDeviceSettings;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import com.concertmod.network.MessageRadioChannel;
 import com.concertmod.tile.TileConfetti;
 import com.concertmod.tile.TileFlame;
 import com.concertmod.tile.TileLamp;
+import com.concertmod.tile.TileRadioReceiver;
+import com.concertmod.tile.TileRadioTransmitter;
 import com.concertmod.tile.TileSmoke;
 import com.concertmod.tile.TileSpotlight;
 import com.concertmod.tile.TileStrobe;
@@ -17,17 +18,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = ConcertMod.MODID, name = ConcertMod.NAME, version = ConcertMod.VERSION, acceptedMinecraftVersions = "[1.12.2]")
 public class ConcertMod {
     public static final String MODID = "concertmod";
     public static final String NAME = "Concert Mod";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.2.0";
 
     public static final int GUI_DEVICE = 0;
+    public static final int GUI_RADIO = 1;
 
     @Mod.Instance(MODID)
     public static ConcertMod instance;
@@ -45,6 +48,7 @@ public class ConcertMod {
     public void preInit(FMLPreInitializationEvent event) {
         NET = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         NET.registerMessage(MessageDeviceSettings.Handler.class, MessageDeviceSettings.class, 0, Side.SERVER);
+        NET.registerMessage(MessageRadioChannel.Handler.class, MessageRadioChannel.class, 1, Side.SERVER);
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
         GameRegistry.registerTileEntity(TileSpotlight.class, new ResourceLocation(MODID, "spotlight"));
@@ -53,6 +57,8 @@ public class ConcertMod {
         GameRegistry.registerTileEntity(TileConfetti.class, new ResourceLocation(MODID, "confetti_machine"));
         GameRegistry.registerTileEntity(TileSmoke.class, new ResourceLocation(MODID, "smoke_machine"));
         GameRegistry.registerTileEntity(TileFlame.class, new ResourceLocation(MODID, "flame_machine"));
+        GameRegistry.registerTileEntity(TileRadioTransmitter.class, new ResourceLocation(MODID, "radio_transmitter"));
+        GameRegistry.registerTileEntity(TileRadioReceiver.class, new ResourceLocation(MODID, "radio_receiver"));
     }
 
     @Mod.EventHandler
